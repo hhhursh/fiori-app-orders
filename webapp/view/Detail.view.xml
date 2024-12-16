@@ -1,0 +1,117 @@
+<mvc:View xmlns:smarttable="sap.ui.comp.smarttable"
+	controllerName="sap.ui.demo.orderbrowser.controller.Detail"
+	xmlns="sap.m"
+	xmlns:semantic="sap.f.semantic"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns:l="sap.ui.layout">
+
+	<semantic:SemanticPage
+		id="detail"
+		busy="{detailView>/busy}"
+		busyIndicatorDelay="{detailView>/delay}"
+		core:require="{
+			formatMessage: 'sap/base/strings/formatMessage',
+			DateType: 'sap/ui/model/type/Date'
+		}">
+
+        <semantic:titleHeading>
+			<Title
+				text="{
+					parts: [
+						'i18n>commonItemTitle',
+						'OrderID'
+					],
+					formatter: 'formatMessage'
+				}"/>
+		</semantic:titleHeading>
+
+        <semantic:headerContent>
+            <l:HorizontalLayout>
+                <l:VerticalLayout class="sapUiMediumMarginEnd">
+                    <ObjectAttribute
+						title="{i18n>commonCustomerName}"
+						text="{CustomerID}"/>
+
+                    <ObjectAttribute
+						title="{i18n>detailOrderDate}"
+						text="{
+							path: 'OrderDate',
+							type: 'DateType',
+							formatOptions: { style: 'medium' }
+						}"/>
+
+                    <ObjectAttribute
+						title="{i18n>commonItemShipped}"
+						text="{= ${ShippedDate} ?
+								${
+									path: 'ShippedDate',
+									type: 'DateType',
+									formatOptions: { style: 'medium' }
+								}
+							:${i18n>commonItemNotYetShipped} }"/>
+                </l:VerticalLayout>
+                <l:VerticalLayout>
+					<Label text="{i18n>priceText}"/>
+					<ObjectNumber
+						number="{
+							parts: [
+								{path:'detailView>/totalOrderAmount'},
+								{path:'detailView>/currency'}
+							],
+							type: 'sap.ui.model.type.Currency',
+							formatOptions: {
+								showMeasure: false
+							}
+						}"
+						unit="{detailView>/currency}"/>
+				</l:VerticalLayout>
+            </l:HorizontalLayout>
+        </semantic:headerContent>
+
+        <semantic:content>
+            <l:VerticalLayout>
+                <IconTabBar
+					id="iconTabBar"
+					headerBackgroundDesign="Transparent"
+					select=".onTabSelect"
+					selectedKey="{detailView>/selectedTab}">
+					<items>
+						<IconTabFilter
+							id="iconTabFilterShipping"
+							icon="sap-icon://shipping-status"
+							tooltip="{i18n>detailIconTabBarShipping}"
+							key="shipping">
+						</IconTabFilter>
+						<IconTabFilter
+							id="iconTabFilterProcessor"
+							icon="sap-icon://employee"
+							tooltip="{i18n>detailIconTabBarProcessor}"
+							key="processor">
+						</IconTabFilter>
+					</items>
+				</IconTabBar>
+
+                <smarttable:SmartTable 
+                    smartFilterId="listReportSmartFilterBar"
+                    entitySet="Order_Details"
+                    tableType="ResponsiveTable"
+                    showTablePersonalisation="true"  
+                    showRowCount="true" 
+                    initiallyVisibleFields="OrderID,ProductID,Quantity,UnitPrice,Discount"
+                    requestAtLeastFields="OrderID,ProductID,Quantity,UnitPrice,Discount"
+                    persistencyKey="SmartTableOrders"
+                    enableAutoBinding="true"
+                    beforeRebindTable="onBeforeRebindItem" 
+                >
+                    <smartTable:customToolbar>
+                        <OverflowToolbar id="_IDGenOverflowToolbar" design="Transparent">
+                            <ToolbarSpacer id="_IDGenToolbarSpacer"/>
+                            <Button id="_IDGenButton" text="Create" press="onCreate"/>
+                        </OverflowToolbar>
+                    </smartTable:customToolbar>
+                </smarttable:SmartTable>
+            </l:VerticalLayout>
+        </semantic:content>
+    </semantic:SemanticPage>
+</mvc:View>
