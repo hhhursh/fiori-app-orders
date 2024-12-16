@@ -17,7 +17,7 @@
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
 
-## orders1
+## Order Workbench
 
 An SAP Fiori application.
 
